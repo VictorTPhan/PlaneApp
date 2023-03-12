@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Home Screen'),
     );
   }
 }
@@ -30,13 +31,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,25 +44,75 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
-              'Select item that you want to look at in the toolbar.',
+              'Home',
+              style: TextStyle(fontSize: 45),
+            ),
+            const Text(
+              '--- --- --- --- --- ---\n\n',
+              style: TextStyle(fontSize: 20),
+            ),
+            const Text(
+              'Menu\n',
+              style: TextStyle(fontSize: 30),
+            ),
+            const Text(
+              'Liked\n',
+              style: TextStyle(fontSize: 30),
+            ),
+            const Text(
+              'Trending\n',
+              style: TextStyle(fontSize: 30),
+            ),
+            const Text(
+              'Select item that you want to look at in the toolbar',
+              style: TextStyle(fontSize: 15),
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), //
       bottomNavigationBar: BottomAppBar(
-        child:Row(mainAxisAlignment: MainAxisAlignment.center,
-          children:[
-            Text('Home'),
-            Text('Planes'),
-            Text('Airports'),
-            Text('Flights'),
-          ],
-        ),
+        child:
+          Container(
+            child:Row(mainAxisAlignment: MainAxisAlignment.center,
+              children:[
+                TextButton(
+                  child:Text('Home', style: TextStyle(fontSize: 20)),
+                  onPressed:null,
+                ),
+                Text(' | ', style: TextStyle(fontSize: 20)),
+                TextButton(
+                child:Text('Planes', style: TextStyle(fontSize: 20)),
+                  onPressed:() {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const ScreenPage(title:'Plane')),
+                    );
+                  },
+                ),
+                Text(' | ', style: TextStyle(fontSize: 20)),
+                TextButton(
+                child:Text('Airports', style: TextStyle(fontSize: 20)),
+                  onPressed:() {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const ScreenPage(title:'Airport')),
+                    );
+                  },
+                ),
+                Text(' | ', style: TextStyle(fontSize: 20)),
+                TextButton(
+                child:Text('Flights', style: TextStyle(fontSize: 20)),
+                  onPressed:() {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const ScreenPage(title:'Flight')),
+                    );
+                  },
+                ),
+              ],
+            ),
+              height: 75,
+          ),
         color:Colors.orangeAccent,
       ),
     );
