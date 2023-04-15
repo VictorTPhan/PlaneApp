@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'screen_details.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class ScreenPage extends StatefulWidget {
   const ScreenPage({super.key, required this.title});
@@ -12,64 +13,66 @@ class ScreenPage extends StatefulWidget {
 
 class _ScreenPageState extends State<ScreenPage> {
 
+  Future<List<Map>> getdata() async{
+    List<Map> data = [];
+    DatabaseReference ref = FirebaseDatabase.instance.ref("Test");
+    print("here");
+    final snapshot = await ref.get();
+    print(snapshot.value);
+    return data;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-
-        title: Text(widget.title + 's Details'),
+        title: Text(widget.title + ' Database'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children:[
+          Container(
+            child:Text(
               widget.title + 's',
               style: TextStyle(fontSize: 45),
             ),
-            const Text(
-              '--- --- --- --- --- ---\n\n',
-              style: TextStyle(fontSize: 20),
-            ),
-          TextButton(
-            child:Text(
-              widget.title + ' 1',
-              style: TextStyle(fontSize: 30),
-            ),
-            onPressed:() {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const ScreenDetailPage(title:'Flight')),
-              );
-            },
+            height:75,
           ),
-
-            TextButton(
-              child:Text(
-                widget.title + ' 2',
-                style: TextStyle(fontSize: 30),
-              ),
-              onPressed:() {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ScreenDetailPage(title:'Flight')),
-                );
-              },
+          const Text(
+            '--- --- --- --- --- ---\n\n',
+            style: TextStyle(fontSize: 20),
+          ),
+          SingleChildScrollView(
+            child: FutureBuilder(
+              future: getdata(),
+              builder: (context, snapshot){
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                else if(snapshot.hasData && snapshot.data!.isNotEmpty){
+                  var group = snapshot.data!.map(
+                      (eachGroup) => Container(
+                        child:Row(
+                          mainAxisAlignment:MainAxisAlignment.center,
+                          children: [
+                            Text(eachGroup["Name"]),
+                          ]
+                        )
+                      )
+                  ).toList();
+                  return Column(
+                    children:group,
+                  );
+                }
+                else{
+                  return Text('Hi');
+                }
+              }
             ),
-            TextButton(
-              child:Text(
-                widget.title + ' 3',
-                style: TextStyle(fontSize: 30),
-              ),
-              onPressed:() {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ScreenDetailPage(title:'Flight')),
-                );
-              },
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
