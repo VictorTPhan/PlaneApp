@@ -14,12 +14,14 @@ class ScreenPage extends StatefulWidget {
 class _ScreenPageState extends State<ScreenPage> {
 
   Future<List<Map>> getdata() async{
-    List<Map> data = [];
-    DatabaseReference ref = FirebaseDatabase.instance.ref("Test");
+    DatabaseReference ref = FirebaseDatabase.instance.ref();
     print("here");
     final snapshot = await ref.get();
-    print(snapshot.value);
-    return data;
+    if (snapshot.hasError) {
+      print("Error");
+    }
+    if (snapshot.exists) print("found");
+    return [];
   }
 
   @override
