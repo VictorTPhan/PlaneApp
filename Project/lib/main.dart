@@ -1,6 +1,11 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'screen.dart';
+import 'home.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'signup.dart';
 
 Future<void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,104 +25,82 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Home Screen'),
+      home: const LoginPage(title: 'Home Screen'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key, required this.title});
 
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _LoginPageState extends State<LoginPage> {
+  String email = '';
+  String password = '';
+  FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
+  Future <void> login () async{
+    try{
+      await firebaseAuth.signInWithEmailAndPassword(email:this.email, password:this.password);
+      if(firebaseAuth.currentUser != null){
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => MyHomePage(title:'Home')),
+        );
+      }
+    }
+    catch(e){}
+
+  }
   @override
   Widget build(BuildContext context) {
+    FirebaseDatabase db = FirebaseDatabase.instance;
     return Scaffold(
-      appBar: AppBar(
-
-        title: Text(widget.title),
-      ),
-      body: Center(
+      body:Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'Home',
-              style: TextStyle(fontSize: 45),
+          children: [
+            TextField(
+              onChanged: (s1) {
+                this.email = s1;
+                },
+              decoration:InputDecoration(
+                border:OutlineInputBorder(),
+                labelText: 'Email',
+              )
             ),
-            const Text(
-              '--- --- --- --- --- ---\n\n',
-              style: TextStyle(fontSize: 20),
+            TextField(
+                onChanged: (s1) {
+                  this.password = s1;
+                },
+                obscureText: true,
+                decoration:InputDecoration(
+                  border:OutlineInputBorder(),
+                  labelText: 'Password',
+                )
             ),
-            const Text(
-              'Menu\n',
-              style: TextStyle(fontSize: 30),
+            TextButton(
+              child: Text('Sign up'),
+              onPressed: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SignUpPage(title:'Create an Account')),
+                );
+              },
             ),
-            const Text(
-              'Liked\n',
-              style: TextStyle(fontSize: 30),
-            ),
-            const Text(
-              'Trending\n',
-              style: TextStyle(fontSize: 30),
-            ),
-            const Text(
-              'Select item that you want to look at in the toolbar',
-              style: TextStyle(fontSize: 15),
+            ElevatedButton(
+            child:Text('Log in'),
+              onPressed:(){
+              login();
+              },
             ),
           ],
         ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        child:
-          Container(
-            child:Row(mainAxisAlignment: MainAxisAlignment.center,
-              children:[
-                TextButton(
-                  child:Text('Home', style: TextStyle(fontSize: 20)),
-                  onPressed:null,
-                ),
-                Text(' | ', style: TextStyle(fontSize: 20)),
-                TextButton(
-                child:Text('Planes', style: TextStyle(fontSize: 20)),
-                  onPressed:() {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const ScreenPage(title:'Plane')),
-                    );
-                  },
-                ),
-                Text(' | ', style: TextStyle(fontSize: 20)),
-                TextButton(
-                child:Text('Airports', style: TextStyle(fontSize: 20)),
-                  onPressed:() {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const ScreenPage(title:'Airport')),
-                    );
-                  },
-                ),
-                Text(' | ', style: TextStyle(fontSize: 20)),
-                TextButton(
-                child:Text('Flights', style: TextStyle(fontSize: 20)),
-                  onPressed:() {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const ScreenPage(title:'Flight')),
-                    );
-                  },
-                ),
-              ],
-            ),
-              height: 75,
-          ),
-        color:Colors.orangeAccent,
       ),
     );
   }

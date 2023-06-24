@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>1063325978509-3tgp0jjveet5k6nhjr68qiu3emu29j54.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1063325978509-3tgp0jjveet5k6nhjr68qiu3emu29j54</string>
+	<key>API_KEY</key>
+	<string>AIzaSyA19UJ6pys8snYHjKj1yqyNeF0gsRsEWAs</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1063325978509</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.planeApp</string>
+	<key>PROJECT_ID</key>
+	<string>planeapp-43059</string>
+	<key>STORAGE_BUCKET</key>
+	<string>planeapp-43059.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1063325978509:ios:46592494d2b1e2a63837c4</string>
+	<key>DATABASE_URL</key>
+	<string>https://planeapp-43059-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>
