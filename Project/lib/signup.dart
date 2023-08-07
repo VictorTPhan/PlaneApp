@@ -50,10 +50,26 @@ String password = '';
             ElevatedButton(
               onPressed:() async {
                 try{
-                  final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(email:this.email, password:this.password);
+                  var credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(email:this.email, password:this.password);
+                  DatabaseReference ref = FirebaseDatabase.instance.ref('Users');
+                  ref.update({
+                    await credential.user!.uid:{
+                      "Currently Viewing":"",
+                      "Liked":[],
+
+                    }
+                    }
+                  );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => MyHomePage(title:'Home', uid:credential.user?.uid)),
+                  );
                 }
                 catch(e) {
-                  print(e);
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content:Text(e.toString()),
+                    )
+                  );
                 }
               },
               child: Text('Register'),

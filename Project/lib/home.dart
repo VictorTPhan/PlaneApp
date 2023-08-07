@@ -9,33 +9,34 @@ import 'random.dart';
 import 'top3.dart';
 import 'trending.dart';
 
-Future<void> main() async{
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  print("Firebase Init");
-  runApp(const MyApp());
+// Future<void> main() async{
+//   WidgetsFlutterBinding.ensureInitialized();
+//   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+//   print("Firebase Init");
+//   runApp(const MyApp());
+//
+// }
 
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Home Screen',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Home Screen'),
-    );
-  }
-}
+// class MyApp extends StatelessWidget {
+//   const MyApp({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       title: 'Home Screen',
+//       theme: ThemeData(
+//         primarySwatch: Colors.blue,
+//       ),
+//       home: const MyHomePage(title: 'Home Screen'),
+//     );
+//   }
+// }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({super.key, required this.title, required this.uid});
 
   final String title;
+  final String? uid;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();

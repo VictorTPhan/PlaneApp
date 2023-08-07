@@ -46,11 +46,11 @@ class _LoginPageState extends State<LoginPage> {
 
   Future <void> login () async{
     try{
-      await firebaseAuth.signInWithEmailAndPassword(email:this.email, password:this.password);
+      final credential = await firebaseAuth.signInWithEmailAndPassword(email:this.email, password:this.password);
       if(firebaseAuth.currentUser != null){
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => MyHomePage(title:'Home')),
+          MaterialPageRoute(builder: (context) => MyHomePage(title:'Home', uid:credential.user?.uid)),
         );
       }
     }
