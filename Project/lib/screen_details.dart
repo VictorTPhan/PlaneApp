@@ -10,17 +10,20 @@ final FirebaseDatabase database;
 final String ref;
 
 @override
-State<ScreenDetailPage> createState() => _ScreenDetailPageState();
+State<ScreenDetailPage> createState() => ScreenDetailPageState();
 }
 
-class _ScreenDetailPageState extends State<ScreenDetailPage> {
+class ScreenDetailPageState extends State<ScreenDetailPage> {
   late List<String?> details;
   Future<List> getdata() async{
     details = [];
     DatabaseReference ref = widget.database.ref();
     final snapshot = await ref.child(widget.ref+"/"+widget.title).get();
     for (var data in snapshot.children) {
-      details.add(data.key);
+      final temp = await ref.child(widget.ref+"/"+widget.title+"/"+(data.key as String)).get();
+      final value = temp.value.toString();
+      details.add(data.key.toString()+": "+value);
+
     }
     print(details);
     return details;

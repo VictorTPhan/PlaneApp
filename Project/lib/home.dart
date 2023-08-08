@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'screen.dart';
@@ -5,32 +7,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'liked.dart';
-import 'random.dart';
+import 'screen_details.dart';
 import 'top3.dart';
 import 'trending.dart';
-
-// Future<void> main() async{
-//   WidgetsFlutterBinding.ensureInitialized();
-//   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-//   print("Firebase Init");
-//   runApp(const MyApp());
-//
-// }
-
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       title: 'Home Screen',
-//       theme: ThemeData(
-//         primarySwatch: Colors.blue,
-//       ),
-//       home: const MyHomePage(title: 'Home Screen'),
-//     );
-//   }
-// }
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title, required this.uid});
@@ -43,11 +22,37 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  late String RandomPage;
+  late String RandomTopic;
+  FirebaseDatabase db = FirebaseDatabase.instance;
 
+  Future<void> getdata() async {
+    var titles = [];
+    DatabaseReference ref = db.ref(RandomTopic);
+    final snapshot = await ref.once();
+    for (var data in snapshot.snapshot.children) {
+      titles.add(data.key);
+    }
+    RandomPage = titles[Random().nextInt(titles.length)];
+  }
+
+  Future<void> getrandom() async {
+    var value = Random().nextInt(3);
+    if (value == 0) {
+      RandomTopic = "Planes";
+    }
+    else if (value == 1) {
+      RandomTopic = "Airports";
+    }
+    else {
+      RandomTopic = "Flights";
+    }
+    getdata();
+  }
 
   @override
   Widget build(BuildContext context) {
-    FirebaseDatabase db = FirebaseDatabase.instance;
+    getrandom();
     return Scaffold(
       appBar: AppBar(
 
@@ -109,8 +114,10 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed:() {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) =>  RandomPage(title:'Random')),
-                );
+                  MaterialPageRoute(builder: (context) =>  ScreenDetailPage(ref: RandomTopic, title: RandomPage, database: db)),
+                ).then((value) {
+                  getrandom();
+                });
               },
             ),
             const Text(
