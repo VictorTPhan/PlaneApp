@@ -78,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed:() {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) =>  TopPage(title:'Top 3 Flights')),
+                  MaterialPageRoute(builder: (context) =>  top3(title:'Top 3 Flights', database: db)),
                 );
               },
             ),
@@ -90,7 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed:() {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) =>  LikedPage(title:'Liked')),
+                  MaterialPageRoute(builder: (context) =>  LikedPage(title:'Liked', database: db)),
                 );
               },
             ),
@@ -102,7 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed:() {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) =>  TrendingPage(title:'Trending')),
+                  MaterialPageRoute(builder: (context) =>  TrendingPage(database: db, title:'Trending')),
                 );
               },
             ),
