@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'screen.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -15,6 +16,13 @@ State<ScreenDetailPage> createState() => ScreenDetailPageState();
 
 class ScreenDetailPageState extends State<ScreenDetailPage> {
   late List<String?> details;
+  void SetViewed() async {
+    var uid = FirebaseAuth.instance.currentUser?.uid as String;
+    var ref = widget.database.ref("Users/" + uid);
+    await ref.update({
+      "Currently Viewing": widget.ref+"/"+widget.title
+    });
+  }
   Future<List> getdata() async{
     details = [];
     DatabaseReference ref = widget.database.ref();
@@ -31,6 +39,7 @@ class ScreenDetailPageState extends State<ScreenDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    SetViewed();
     return Scaffold(
       appBar: AppBar(
 

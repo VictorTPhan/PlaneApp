@@ -26,6 +26,17 @@ class _MyHomePageState extends State<MyHomePage> {
   late String RandomTopic;
   FirebaseDatabase db = FirebaseDatabase.instance;
 
+  Future<void> CheckTime() async{
+    var ref =  db.ref("TimeUpdated");
+    var temp = await ref.get();
+    var time = temp.value as String;
+    if (time.isEmpty){
+    db.ref().update({
+    "TimeUpdated":DateTime.now().toString()
+    });
+    }
+  }
+
   Future<void> getdata() async {
     var titles = [];
     DatabaseReference ref = db.ref(RandomTopic);
@@ -53,6 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     getrandom();
+    CheckTime();
     return Scaffold(
       appBar: AppBar(
 
