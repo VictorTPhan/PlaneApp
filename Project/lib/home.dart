@@ -26,7 +26,7 @@ class _MyHomePageState extends State<MyHomePage> {
   //Plane data is just static, I would recommend running this once during development
   //to get your required data in the database and NOT using this in the app while running.
   Future<void> updateDatabaseWithPlanes() async {
-    const url = "http://api.aviationstack.com/v1/airplanes?limit=1&access_key=d3d92a69102709cc75bdaaeb75453dd7";
+    const url = "http://api.aviationstack.com/v1/airplanes?limit=9&access_key=d3d92a69102709cc75bdaaeb75453dd7";
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       Map<String, dynamic> map = json.decode(response.body);
@@ -36,30 +36,40 @@ class _MyHomePageState extends State<MyHomePage> {
         //Do whatever you need to below
 
         /*
-         "registration_number": "YR-BAC",
-         "production_line": "Boeing 737 Classic",
+         "registration_number": "YR-BAC", *
+         "production_line": "Boeing 737 Classic", *
          "iata_type": "B737-300",
          "model_name": "737",
-         "model_code": "B737-377",
+         "model_code": "B737-377", *
          "icao_code_hex": "4A0823",
          "iata_code_short": "B733",
          "construction_number": "23653",
          "test_registration_number": null,
          "rollout_date": null,
-         "first_flight_date": "1986-08-02T22:00:00.000Z",
-         "delivery_date": "1986-08-21T22:00:00.000Z",
+         "first_flight_date": "1986-08-02T22:00:00.000Z", *
+         "delivery_date": "1986-08-21T22:00:00.000Z", *
          "registration_date": "0000-00-00",
          "line_number": "1260",
          "plane_series": "377",
-         "airline_iata_code": "0B",
-         "airline_icao_code": null,
+         "airline_iata_code": "0B", *
+         "airline_icao_code": null, *
          "plane_owner": "Airwork Flight Operations Ltd",
          "engines_count": "2",
          "engines_type": "JET",
-         "plane_age": "31",
-         "plane_status": "active",
+         "plane_age": "31", *
+         "plane_status": "active", *
          "plane_class": null
          */
+
+        flight['Liked Number'] = 0;
+        flight['View Number'] = 0;
+
+        //update info at root/Planes
+        await FirebaseDatabase.instance.ref().child("Planes").child(flight['model_code']).set(flight).then((value) {
+          print(flight['model_name']+" updated");
+        }).catchError((onError) {
+          print("Error");
+        });
       }
     } else {
       return;
@@ -69,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
   //Airport data is just static, I would recommend running this once during development
   //to get your required data in the database and NOT using this in the app while running.
   Future<void> updateDatabaseWithAirports() async {
-    const url = "http://api.aviationstack.com/v1/airports?limit=1&access_key=d3d92a69102709cc75bdaaeb75453dd7";
+    const url = "http://api.aviationstack.com/v1/airports?limit=10&access_key=d3d92a69102709cc75bdaaeb75453dd7";
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       Map<String, dynamic> map = json.decode(response.body);
@@ -79,19 +89,28 @@ class _MyHomePageState extends State<MyHomePage> {
         //Do whatever you need to below
 
         /*
-         "airport_name": "Anaa",
-         "iata_code": "AAA",
-         "icao_code": "NTGA",
+         "airport_name": "Anaa", *
+         "iata_code": "AAA", *
+         "icao_code": "NTGA", *
          "latitude": "-17.05",
          "longitude": "-145.41667",
          "geoname_id": "6947726",
-         "timezone": "Pacific/Tahiti",
-         "gmt": "-10",
+         "timezone": "Pacific/Tahiti", *
+         "gmt": "-10", *
          "phone_number": null,
-         "country_name": "French Polynesia",
+         "country_name": "French Polynesia", *
          "country_iso2": "PF",
          "city_iata_code": "AAA"
          */
+        airport['Liked Number'] = 0;
+        airport['View Number'] = 0;
+
+        //update info at root/Planes
+        await FirebaseDatabase.instance.ref().child("Airports").child(airport['airport_name']).set(airport).then((value) {
+          print(airport['airport_name']+" updated");
+        }).catchError((onError) {
+          print("Error");
+        });
       }
     } else {
       return;
@@ -100,7 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   //Run this every ____ hours or if user timestamp exceeds the last recorded timestamp by ____ hours
   Future<void> updateDatabaseWithFlights() async {
-    const url = "http://api.aviationstack.com/v1/flights?limit=1&access_key=d3d92a69102709cc75bdaaeb75453dd7";
+    const url = "http://api.aviationstack.com/v1/flights?limit=10&access_key=d3d92a69102709cc75bdaaeb75453dd7";
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       Map<String, dynamic> map = json.decode(response.body);
@@ -109,20 +128,16 @@ class _MyHomePageState extends State<MyHomePage> {
         print(flight);
         //Do whatever you need to below
 
-        /*
-         "airport_name": "Anaa",
-         "iata_code": "AAA",
-         "icao_code": "NTGA",
-         "latitude": "-17.05",
-         "longitude": "-145.41667",
-         "geoname_id": "6947726",
-         "timezone": "Pacific/Tahiti",
-         "gmt": "-10",
-         "phone_number": null,
-         "country_name": "French Polynesia",
-         "country_iso2": "PF",
-         "city_iata_code": "AAA"
-         */
+        flight['Liked Number'] = 0;
+        flight['View Number'] = 0;
+        var name = flight['airline']['name'] + " " + flight['flight']['number'];
+
+        //update info at root/Planes
+        await FirebaseDatabase.instance.ref().child("Flights").child(name).set(flight).then((value) {
+          print(name+" updated");
+        }).catchError((onError) {
+          print("Error");
+        });
       }
     } else {
       return;
@@ -130,15 +145,26 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> CheckTime() async {
-    var ref = FirebaseDatabase.instance.ref("TimeUpdated");
-    var temp = await ref.get();
-    var time = temp.value as String;
-    if (time.isEmpty) {
-      FirebaseDatabase.instance.ref().update(
-        {
-          "TimeUpdated": DateTime.now().toString()
-        }
-      );
+    //1. get the time from the database
+    var lastTime = 0;
+    await FirebaseDatabase.instance.ref().once().then((value) {
+      var info = value.snapshot.value as Map;
+      lastTime = info["TimeUpdated"];
+    });
+    //2. get the current time
+    var currentTime = DateTime.now().millisecondsSinceEpoch;
+    await FirebaseDatabase.instance.ref().update({
+      "TimeUpdated": currentTime
+    });
+    //3. compare the two times and see if ~hour has passed
+    int deltaTime = currentTime - lastTime;
+    DateTime deltaDateTime = DateTime.fromMillisecondsSinceEpoch(deltaTime);
+    Duration duration = deltaDateTime.difference(DateTime(1970, 1, 1));
+    int hours = duration.inHours;
+    //4. if so, call the flight update script
+    if (hours > 1) {
+      print("Update Database");
+      await updateDatabaseWithFlights();
     }
   }
 

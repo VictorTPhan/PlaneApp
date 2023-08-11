@@ -24,29 +24,78 @@ class ScreenDetailPageState extends State<ScreenDetailPage> {
   }
 
   Widget getWidgetDependingOnRef(String ref, Map<dynamic, dynamic> info) {
-    if (ref == "Planes") {
+    if (ref == "Planes"){
+      /*
+         "registration_number": "YR-BAC", *
+         "production_line": "Boeing 737 Classic", *
+         "iata_type": "B737-300",
+         "model_name": "737",
+         "model_code": "B737-377", *
+         "icao_code_hex": "4A0823",
+         "iata_code_short": "B733",
+         "construction_number": "23653",
+         "test_registration_number": null,
+         "rollout_date": null,
+         "first_flight_date": "1986-08-02T22:00:00.000Z", *
+         "delivery_date": "1986-08-21T22:00:00.000Z", *
+         "registration_date": "0000-00-00",
+         "line_number": "1260",
+         "plane_series": "377",
+         "airline_iata_code": "0B", *
+         "airline_icao_code": null,
+         "plane_owner": "Airwork Flight Operations Ltd",
+         "engines_count": "2",
+         "engines_type": "JET",
+         "plane_age": "31", *
+         "plane_status": "active", *
+         "plane_class": null
+         */
       return Column(
         children: [
           Text(
-            "Capacity: ${info['Capacity'].toString()} persons",
+            "Registration: ${info['registration_number'].toString()}",
             style: const TextStyle(
                 fontSize: 20
             ),
           ),
           Text(
-            "Range: ${info['Range'].toString()} km",
+            "Production Name: ${info['production_line'].toString()}",
             style: const TextStyle(
                 fontSize: 20
             ),
           ),
           Text(
-            "Likes: ${info['Liked Number'].toString()}",
+            "Model: ${info['model_code'].toString()}",
             style: const TextStyle(
                 fontSize: 20
             ),
           ),
           Text(
-            "Views: ${info['View Number'].toString()}",
+            "First Flight: ${info['first_flight_date'].toString()}",
+            style: const TextStyle(
+                fontSize: 20
+            ),
+          ),
+          Text(
+            "Delivery Date: ${info['delivery_date'].toString()}",
+            style: const TextStyle(
+                fontSize: 20
+            ),
+          ),
+          Text(
+            "Airline: ${info['airline_iata_code'].toString()}",
+            style: const TextStyle(
+                fontSize: 20
+            ),
+          ),
+          Text(
+            "Age: ${info['plane_age'].toString()}",
+            style: const TextStyle(
+                fontSize: 20
+            ),
+          ),
+          Text(
+            "Status: ${info['plane_status'].toString()}",
             style: const TextStyle(
                 fontSize: 20
             ),
@@ -54,28 +103,60 @@ class ScreenDetailPageState extends State<ScreenDetailPage> {
         ],
       );
     } else if (ref == "Airports") {
+      /*
+         "airport_name": "Anaa", *
+         "iata_code": "AAA", *
+         "icao_code": "NTGA", *
+         "latitude": "-17.05",
+         "longitude": "-145.41667",
+         "geoname_id": "6947726",
+         "timezone": "Pacific/Tahiti", *
+         "gmt": "-10", *
+         "phone_number": null,
+         "country_name": "French Polynesia", *
+         "country_iso2": "PF",
+         "city_iata_code": "AAA" *
+         */
       return Column(
         children: [
           Text(
-            "IATA-ICAO: ${info['IATA-ICAO'].toString()}",
+            "Name: ${info['airport_name'].toString()}",
             style: const TextStyle(
                 fontSize: 20
             ),
           ),
           Text(
-            "Location: ${info['Location'].toString()}",
+            "IATA: ${info['iata_code'].toString()}",
             style: const TextStyle(
                 fontSize: 20
             ),
           ),
           Text(
-            "Likes: ${info['Liked Number'].toString()}",
+            "ICAO: ${info['icao_code'].toString()}",
             style: const TextStyle(
                 fontSize: 20
             ),
           ),
           Text(
-            "Views: ${info['View Number'].toString()}",
+            "Time Zone: ${info['timezone'].toString()}",
+            style: const TextStyle(
+                fontSize: 20
+            ),
+          ),
+          Text(
+            "GMT: ${info['gmt'].toString()}",
+            style: const TextStyle(
+                fontSize: 20
+            ),
+          ),
+          Text(
+            "Country: ${info['country_name'].toString()}",
+            style: const TextStyle(
+                fontSize: 20
+            ),
+          ),
+          Text(
+            "City: ${info['city_iata_code'].toString()}",
             style: const TextStyle(
                 fontSize: 20
             ),
@@ -86,35 +167,155 @@ class ScreenDetailPageState extends State<ScreenDetailPage> {
       return Column(
         children: [
           Text(
-            "Locations: ${info['Locations'].toString()}",
+            "Airline: ${info['airline']['name'].toString()}",
             style: const TextStyle(
                 fontSize: 20
             ),
           ),
           Text(
-            "Plane: ${info['Plane'].toString()}",
+            "Flight Number: ${info['flight']['number'].toString()}",
             style: const TextStyle(
                 fontSize: 20
             ),
           ),
           Text(
-            "Status: ${info['Status'].toString()}",
+            "Flight ICAO: ${info['flight']['icao'].toString()}",
             style: const TextStyle(
                 fontSize: 20
             ),
           ),
           Text(
-            "Likes: ${info['Liked Number'].toString()}",
+            "Date: ${info['flight_date'].toString()}",
             style: const TextStyle(
                 fontSize: 20
             ),
           ),
           Text(
-            "Views: ${info['View Number'].toString()}",
+            "Status: ${info['flight_status'].toString()}",
             style: const TextStyle(
                 fontSize: 20
             ),
           ),
+          Text(
+            "Departure Airport: ${info['departure']['airport'].toString()}",
+            style: const TextStyle(
+                fontSize: 20
+            ),
+          ),
+          Text(
+            "Departure Time Zone: ${info['departure']['timezone'].toString()}",
+            style: const TextStyle(
+                fontSize: 20
+            ),
+          ),
+          Text(
+            "Departure ICAO: ${info['departure']['icao'].toString()}",
+            style: const TextStyle(
+                fontSize: 20
+            ),
+          ),
+          Text(
+            "Departure Terminal: ${info['departure']['terminal'].toString()}",
+            style: const TextStyle(
+                fontSize: 20
+            ),
+          ),
+          Text(
+            "Departure Gate: ${info['departure']['gate'].toString()}",
+            style: const TextStyle(
+                fontSize: 20
+            ),
+          ),
+          Text(
+            "Departure Delay: ${info['departure']['delay'].toString()} minutes",
+            style: const TextStyle(
+                fontSize: 20
+            ),
+          ),
+          Text(
+            "Scheduled Departure Time: ${info['departure']['scheduled'].toString()}",
+            style: const TextStyle(
+                fontSize: 20
+            ),
+          ),
+          Text(
+            "Arrival Airport: ${info['arrival']['airport'].toString()}",
+            style: const TextStyle(
+                fontSize: 20
+            ),
+          ),
+          Text(
+            "Arrival Timezone: ${info['arrival']['timezone'].toString()}",
+            style: const TextStyle(
+                fontSize: 20
+            ),
+          ),
+          Text(
+            "Arrival ICAO: ${info['arrival']['icao'].toString()}",
+            style: const TextStyle(
+                fontSize: 20
+            ),
+          ),
+          Text(
+            "Arrival Terminal: ${info['arrival']['terminal'].toString()}",
+            style: const TextStyle(
+                fontSize: 20
+            ),
+          ),
+          Text(
+            "Arrival Gate: ${info['arrival']['gate'].toString()}",
+            style: const TextStyle(
+                fontSize: 20
+            ),
+          ),
+          Text(
+            "Baggage Claim: ${info['arrival']['baggage'].toString()}",
+            style: const TextStyle(
+                fontSize: 20
+            ),
+          ),
+          Text(
+            "Arrival Delay: ${info['arrival']['delay'].toString()}",
+            style: const TextStyle(
+                fontSize: 20
+            ),
+          ),
+          Text(
+            "Scheduled Arrival Time: ${info['arrival']['scheduled'].toString()}",
+            style: const TextStyle(
+                fontSize: 20
+            ),
+          ),
+          Text(
+            "Scheduled Arrival Time: ${info['arrival']['scheduled'].toString()}",
+            style: const TextStyle(
+                fontSize: 20
+            ),
+          ),
+          // Text(
+          //   "Aircraft: ${info['aircraft']['registration'].toString()}",
+          //   style: const TextStyle(
+          //       fontSize: 20
+          //   ),
+          // ),
+          // Text(
+          //   "Aircraft Type: ${info['aircraft']['icao'].toString()}",
+          //   style: const TextStyle(
+          //       fontSize: 20
+          //   ),
+          // ),
+          // Text(
+          //   "On Ground?: ${info['live']['is_ground'].toString()}",
+          //   style: const TextStyle(
+          //       fontSize: 20
+          //   ),
+          // ),
+          // Text(
+          //   "Time Updated: ${info['live']['updated'].toString()}",
+          //   style: const TextStyle(
+          //       fontSize: 20
+          //   ),
+          // ),
         ],
       );
     }
