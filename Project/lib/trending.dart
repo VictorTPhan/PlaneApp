@@ -4,9 +4,7 @@ import 'home.dart';
 import 'screen_details.dart';
 
 class TrendingPage extends StatefulWidget {
-  const TrendingPage({super.key, required this.title, required this.database});
-  final FirebaseDatabase database;
-  final String title;
+  const TrendingPage({super.key});
 
   @override
   State<TrendingPage> createState() => _TrendingPageState();
@@ -15,67 +13,70 @@ class TrendingPage extends StatefulWidget {
 class _TrendingPageState extends State<TrendingPage> {
   late List<String?> titles;
 
-  Future<List> getdata() async{
-    titles = [];
-    DatabaseReference ref = widget.database.ref("Trending");
-    final snapshot = await ref.once();
-    for (var data in snapshot.snapshot.children) {
-      titles.add(data.value as String);
-    }
-    print(titles);
-    return titles;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text("Trending"),
       ),
       body: Center(
         child:Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children:[
-            Container(
-              child:Text(
-                widget.title,
-                style: TextStyle(fontSize: 45),
-              ),
-              height:75,
-            ),
-            const Text(
-              '--- --- --- --- --- ---\n\n',
-              style: TextStyle(fontSize: 20),
-            ),
-            SingleChildScrollView(
-              child: FutureBuilder(
-                  future: getdata(),
-                  builder: (context, snapshot){
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
+            FutureBuilder(
+              future: FirebaseDatabase.instance.ref().child("Flights").orderByChild("Liked Number").limitToLast(3).once(),
+              builder: (context, asyncSnapshot){
+                if (asyncSnapshot.hasData){
+                  try {
+                    var asyncSnapshotList = asyncSnapshot.data?.snapshot.children.toList();
+
+                    var postList = List.empty(growable: true);
+                    for (DataSnapshot dataSnapshot in asyncSnapshotList!) {
+                      postList.add(dataSnapshot.key);
                     }
-                    else if(snapshot.hasData && snapshot.data!.isNotEmpty){
-                      List<Widget> group = [];
-                      for (var data in snapshot.data!){
-                        var temp = data.split("/");
-                        group.add(Container(child:TextButton(child:Text(temp[1]), onPressed:(){
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) =>  ScreenDetailPage(title:temp[1], database: widget.database, ref: temp[0])),
-                          );
-                        })));
-                      }
-                      return Column(
-                        children:group,
-                      );
-                    }
-                    else{
-                      return Text('No data found');
-                    }
+                    postList = postList.reversed.toList();
+
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: postList!.length,
+                      itemBuilder: (BuildContext ctx, i)=> Container(
+                        height: 100,
+                        width: 100,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ScreenDetailPage(
+                                      title: postList[i],
+                                      ref: "Flights"
+                                  )
+                              ),
+                            );
+                          },
+                          child: Card(
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                            child: Center(
+                                child: Text(
+                                  postList[i],
+                                  style: TextStyle(
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.w500
+                                  ),
+                                )
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  } catch (Exception) {
+                    return const Text("Error loading data");
                   }
-              ),
+                }
+                else { // Loading data
+                  return const Text("loading...");
+                }
+              },
             ),
           ],
         ),
