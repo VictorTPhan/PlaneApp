@@ -1,13 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'screen.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 class ScreenDetailPage extends StatefulWidget {
-const ScreenDetailPage({super.key, required this.title, required this.database, required this.ref});
+const ScreenDetailPage({super.key, required this.title, required this.ref});
 
 final String title;
-final FirebaseDatabase database;
 final String ref;
 
 @override
@@ -16,71 +14,153 @@ State<ScreenDetailPage> createState() => ScreenDetailPageState();
 
 class ScreenDetailPageState extends State<ScreenDetailPage> {
   late List<String?> details;
+
   void SetViewed() async {
     var uid = FirebaseAuth.instance.currentUser?.uid as String;
-    var ref = widget.database.ref("Users/" + uid);
+    var ref = FirebaseDatabase.instance.ref("Users/" + uid);
     await ref.update({
       "Currently Viewing": widget.ref+"/"+widget.title
     });
   }
-  Future<List> getdata() async{
-    details = [];
-    DatabaseReference ref = widget.database.ref();
-    final snapshot = await ref.child(widget.ref+"/"+widget.title).get();
-    for (var data in snapshot.children) {
-      final temp = await ref.child(widget.ref+"/"+widget.title+"/"+(data.key as String)).get();
-      final value = temp.value.toString();
-      details.add(data.key.toString()+": "+value);
 
+  Widget getWidgetDependingOnRef(String ref, Map<dynamic, dynamic> info) {
+    if (ref == "Planes") {
+      return Column(
+        children: [
+          Text(
+            "Capacity: ${info['Capacity'].toString()} persons",
+            style: const TextStyle(
+                fontSize: 20
+            ),
+          ),
+          Text(
+            "Range: ${info['Range'].toString()} km",
+            style: const TextStyle(
+                fontSize: 20
+            ),
+          ),
+          Text(
+            "Likes: ${info['Liked Number'].toString()}",
+            style: const TextStyle(
+                fontSize: 20
+            ),
+          ),
+          Text(
+            "Views: ${info['View Number'].toString()}",
+            style: const TextStyle(
+                fontSize: 20
+            ),
+          ),
+        ],
+      );
+    } else if (ref == "Airports") {
+      return Column(
+        children: [
+          Text(
+            "IATA-ICAO: ${info['IATA-ICAO'].toString()}",
+            style: const TextStyle(
+                fontSize: 20
+            ),
+          ),
+          Text(
+            "Location: ${info['Location'].toString()}",
+            style: const TextStyle(
+                fontSize: 20
+            ),
+          ),
+          Text(
+            "Likes: ${info['Liked Number'].toString()}",
+            style: const TextStyle(
+                fontSize: 20
+            ),
+          ),
+          Text(
+            "Views: ${info['View Number'].toString()}",
+            style: const TextStyle(
+                fontSize: 20
+            ),
+          ),
+        ],
+      );
+    } else {
+      return Column(
+        children: [
+          Text(
+            "Locations: ${info['Locations'].toString()}",
+            style: const TextStyle(
+                fontSize: 20
+            ),
+          ),
+          Text(
+            "Plane: ${info['Plane'].toString()}",
+            style: const TextStyle(
+                fontSize: 20
+            ),
+          ),
+          Text(
+            "Status: ${info['Status'].toString()}",
+            style: const TextStyle(
+                fontSize: 20
+            ),
+          ),
+          Text(
+            "Likes: ${info['Liked Number'].toString()}",
+            style: const TextStyle(
+                fontSize: 20
+            ),
+          ),
+          Text(
+            "Views: ${info['View Number'].toString()}",
+            style: const TextStyle(
+                fontSize: 20
+            ),
+          ),
+        ],
+      );
     }
-    print(details);
-    return details;
   }
 
   @override
   Widget build(BuildContext context) {
+    print(widget.ref + " " + widget.title);
     SetViewed();
     return Scaffold(
       appBar: AppBar(
 
-        title: Text(widget.title + ' Details Screen'),
+        title: Text(widget.title + ' Details'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
+            const Divider(
+              thickness: 4.0,
+            ),
             Text(
               widget.title,
-              style: TextStyle(fontSize: 45),
-            ),
-            const Text(
-              '--- --- --- --- --- ---\n\n',
-              style: TextStyle(fontSize: 20),
-            ),
-            SingleChildScrollView(
-              child: FutureBuilder(
-                  future: getdata(),
-                  builder: (context, snapshot){
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                    else if(snapshot.hasData && snapshot.data!.isNotEmpty){
-                      List<Widget> group = [];
-                      for (var data in snapshot.data!){
-                        group.add(Text(data));
-                        }
-                      return Column(
-                        children:group,
-                      );
-                    }
-                    else{
-                      return Text('No data found');
-                    }
-                  }
+              style: const TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold
               ),
+            ),
+            const Divider(
+              thickness: 4.0,
+            ),
+            FutureBuilder(
+              future: FirebaseDatabase.instance.ref().child(widget.ref).child(widget.title).once(),
+              builder: (context, asyncSnapshot) {
+                if (asyncSnapshot.hasData) {
+                  try {
+                    var info = asyncSnapshot.data?.snapshot.value as Map;
+                    return getWidgetDependingOnRef(widget.ref, info);
+                  } on Exception {
+                    return const Text("Error loading data");
+                  }
+                } else { // Loading data
+                  return const Text("loading...");
+                }
+              },
             ),
           ],
         ),

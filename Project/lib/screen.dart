@@ -1,81 +1,80 @@
 import 'package:flutter/material.dart';
 import 'screen_details.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 class ScreenPage extends StatefulWidget {
-  const ScreenPage({super.key, required this.title, required this.database});
+  const ScreenPage({super.key, required this.title});
 
   final String title;
-  final FirebaseDatabase database;
 
   @override
   State<ScreenPage> createState() => _ScreenPageState();
 }
 
 class _ScreenPageState extends State<ScreenPage> {
-
-  late List<String?> titles;
-
-  Future<List> getdata() async{
-    titles = [];
-    DatabaseReference ref = widget.database.ref(widget.title + "s");
-    final snapshot = await ref.once();
-    for (var data in snapshot.snapshot.children) {
-      titles.add(data.key);
-    }
-    return titles;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title + ' Database'),
+        title: Text('${widget.title} Database'),
       ),
       body: Center(
         child:Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children:[
-            Container(
-              child:Text(
-                widget.title + 's',
-                style: TextStyle(fontSize: 45),
-              ),
-              height:75,
-            ),
-            const Text(
-              '--- --- --- --- --- ---\n\n',
-              style: TextStyle(fontSize: 20),
-            ),
-            SingleChildScrollView(
-              child: FutureBuilder(
-                future: getdata(),
-                builder: (context, snapshot){
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                  else if(snapshot.hasData && snapshot.data!.isNotEmpty){
-                    List<Widget> group = [];
-                    for (var data in snapshot.data!){
-                      group.add(Container(child:TextButton(child:Text(data), onPressed:(){
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) =>  ScreenDetailPage(title:data, database: widget.database, ref: widget.title + "s")),
-                        );
-                      })));
+            FutureBuilder(
+              future: FirebaseDatabase.instance.ref().child("${widget.title}s").once(),
+              builder: (context, asyncSnapshot){
+                if (asyncSnapshot.hasData){
+                  try {
+                    var asyncSnapshotList = asyncSnapshot.data?.snapshot.children.toList();
+
+                    final postList = List.empty(growable: true);
+                    for (DataSnapshot dataSnapshot in asyncSnapshotList!) {
+                      postList.add(dataSnapshot.key);
                     }
-                    return Column(
-                      children:group,
+
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: postList!.length,
+                      itemBuilder: (BuildContext ctx, i)=> Container(
+                        height: 100,
+                        width: 100,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ScreenDetailPage(
+                                      title:postList[i],
+                                      ref: widget.title + "s"
+                                  )
+                              ),
+                            );
+                          },
+                          child: Card(
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                            child: Center(
+                              child: Text(
+                                  postList[i],
+                                  style: TextStyle(
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.w500
+                                  ),
+                              )
+                            ),
+                          ),
+                        ),
+                      ),
                     );
-                  }
-                  else{
-                    return Text('No data found');
+                  } catch (Exception) {
+                    return const Text("Error loading data");
                   }
                 }
-              ),
+                else { // Loading data
+                  return const Text("loading...");
+                }
+              },
             ),
           ],
         ),
