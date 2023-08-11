@@ -167,127 +167,161 @@ class ScreenDetailPageState extends State<ScreenDetailPage> {
       return Column(
         children: [
           Text(
-            "Airline: ${info['airline']['name'].toString()}",
+            (info['airline']['name'] == null)
+                ? "Airline Name: No Data Found"
+                : "Airline Name: ${info['airline']['name'].toString()}",
             style: const TextStyle(
                 fontSize: 20
             ),
           ),
           Text(
-            "Flight Number: ${info['flight']['number'].toString()}",
+            (info['flight']['number'] == null)
+                ? "Flight Number: No Data Found"
+                : "Flight Number: ${info['flight']['number'].toString()}",
             style: const TextStyle(
                 fontSize: 20
             ),
           ),
           Text(
-            "Flight ICAO: ${info['flight']['icao'].toString()}",
+            (info['flight']['icao'] == null)
+                ? "Flight ICAO: No Data Found"
+                : "Flight ICAO: ${info['flight']['icao'].toString()}",
             style: const TextStyle(
                 fontSize: 20
             ),
           ),
           Text(
-            "Date: ${info['flight_date'].toString()}",
+            (info['flight_date'] == null)
+                ? "Date: No Data Found"
+                : "Date: ${info['flight_date'].toString()}",
             style: const TextStyle(
                 fontSize: 20
             ),
           ),
           Text(
-            "Status: ${info['flight_status'].toString()}",
+            (info['flight_status'] == null)
+                ? "Status: No Data Found"
+                : "Status: ${info['flight_status'].toString()}",
             style: const TextStyle(
                 fontSize: 20
             ),
           ),
           Text(
-            "Departure Airport: ${info['departure']['airport'].toString()}",
+            (info['departure']['airport'] == null)
+                ? "Departure Airport: No Data Found"
+                : "Departure Airport: ${info['departure']['airport'].toString()}",
             style: const TextStyle(
                 fontSize: 20
             ),
           ),
           Text(
-            "Departure Time Zone: ${info['departure']['timezone'].toString()}",
+            (info['departure']['timezone'] == null)
+                ? "Departure Time Zone: No Data Found"
+                : "Departure Time Zone: ${info['departure']['timezone'].toString()}",
             style: const TextStyle(
                 fontSize: 20
             ),
           ),
           Text(
-            "Departure ICAO: ${info['departure']['icao'].toString()}",
+            (info['departure']['icao'] == null)
+                ? "Departure ICAO: No Data Found"
+                : "Departure ICAO: ${info['departure']['icao'].toString()}",
             style: const TextStyle(
                 fontSize: 20
             ),
           ),
           Text(
-            "Departure Terminal: ${info['departure']['terminal'].toString()}",
+            (info['departure']['terminal'] == null)
+                ? "Departure Terminal: No Data Found"
+                : "Departure Terminal: ${info['departure']['terminal'].toString()}",
             style: const TextStyle(
                 fontSize: 20
             ),
           ),
           Text(
-            "Departure Gate: ${info['departure']['gate'].toString()}",
+            (info['departure']['gate'] == null)
+                ? "Departure Gate: No Data Found"
+                : "Departure Gate: ${info['departure']['gate'].toString()}",
             style: const TextStyle(
                 fontSize: 20
             ),
           ),
           Text(
-            "Departure Delay: ${info['departure']['delay'].toString()} minutes",
+            (info['departure']['delay'] == null)
+                ? "Departure Delay: No Data Found"
+                : "Departure Delay: ${info['departure']['delay'].toString()} minutes",
             style: const TextStyle(
                 fontSize: 20
             ),
           ),
           Text(
-            "Scheduled Departure Time: ${info['departure']['scheduled'].toString()}",
+            (info['departure']['scheduled'] == null)
+                ? "Scheduled Departure Time: No Data Found"
+                : "Scheduled Departure Time: ${info['departure']['scheduled'].toString()}",
             style: const TextStyle(
                 fontSize: 20
             ),
           ),
           Text(
-            "Arrival Airport: ${info['arrival']['airport'].toString()}",
+            (info['arrival']['airport'] == null)
+                ? "Arrival Airport: No Data Found"
+                : "Arrival Airport: ${info['arrival']['airport'].toString()}",
             style: const TextStyle(
                 fontSize: 20
             ),
           ),
           Text(
-            "Arrival Timezone: ${info['arrival']['timezone'].toString()}",
+            (info['arrival']['timezone'] == null)
+                ? "Arrival Timezone: No Data Found"
+                : "Arrival Timezone: ${info['arrival']['timezone'].toString()}",
             style: const TextStyle(
                 fontSize: 20
             ),
           ),
           Text(
-            "Arrival ICAO: ${info['arrival']['icao'].toString()}",
+            (info['arrival']['icao'] == null)
+                ? "Arrival ICAO: No Data Found"
+                : "Arrival ICAO: ${info['arrival']['icao'].toString()}",
             style: const TextStyle(
                 fontSize: 20
             ),
           ),
           Text(
-            "Arrival Terminal: ${info['arrival']['terminal'].toString()}",
+            (info['arrival']['terminal'] == null)
+                ? "Arrival Terminal: No Data Found"
+                : "Arrival Terminal: ${info['arrival']['terminal'].toString()}",
             style: const TextStyle(
                 fontSize: 20
             ),
           ),
           Text(
-            "Arrival Gate: ${info['arrival']['gate'].toString()}",
+            (info['arrival']['gate'] == null)
+                ? "Arrival Gate: No Data Found"
+                : "Arrival Gate: ${info['arrival']['gate'].toString()}",
             style: const TextStyle(
                 fontSize: 20
             ),
           ),
           Text(
-            "Baggage Claim: ${info['arrival']['baggage'].toString()}",
+            (info['arrival']['baggage'] == null)
+                ? "Baggage Claim: No Data Found"
+                : "Baggage Claim: ${info['arrival']['baggage'].toString()}",
             style: const TextStyle(
                 fontSize: 20
             ),
           ),
           Text(
-            "Arrival Delay: ${info['arrival']['delay'].toString()}",
+            (info['arrival']['delay'] == null)
+                ? "Arrival Delay: No Data Found"
+                : "Arrival Delay: ${info['arrival']['delay'].toString()}",
             style: const TextStyle(
                 fontSize: 20
             ),
           ),
           Text(
-            "Scheduled Arrival Time: ${info['arrival']['scheduled'].toString()}",
-            style: const TextStyle(
-                fontSize: 20
-            ),
-          ),
-          Text(
-            "Scheduled Arrival Time: ${info['arrival']['scheduled'].toString()}",
+            (info['arrival']['scheduled'] == null)
+              ? "Scheduled Arrival Time: No Data Found"
+              : "Scheduled Arrival Time: ${info['arrival']['scheduled'].toString()}",
             style: const TextStyle(
                 fontSize: 20
             ),
