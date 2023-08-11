@@ -165,6 +165,7 @@ class ScreenDetailPageState extends State<ScreenDetailPage> {
       );
     } else {
       return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             (info['airline']['name'] == null)
@@ -364,40 +365,67 @@ class ScreenDetailPageState extends State<ScreenDetailPage> {
 
         title: Text(widget.title + ' Details'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            const Divider(
-              thickness: 4.0,
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          const Divider(
+            thickness: 4.0,
+          ),
+          Text(
+            widget.title,
+            style: const TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold
             ),
-            Text(
-              widget.title,
-              style: const TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold
-              ),
-            ),
-            const Divider(
-              thickness: 4.0,
-            ),
-            FutureBuilder(
-              future: FirebaseDatabase.instance.ref().child(widget.ref).child(widget.title).once(),
-              builder: (context, asyncSnapshot) {
-                if (asyncSnapshot.hasData) {
-                  try {
-                    var info = asyncSnapshot.data?.snapshot.value as Map;
-                    return getWidgetDependingOnRef(widget.ref, info);
-                  } on Exception {
-                    return const Text("Error loading data");
-                  }
-                } else { // Loading data
-                  return const Text("loading...");
+          ),
+          const Divider(
+            thickness: 4.0,
+          ),
+          FutureBuilder(
+            future: FirebaseDatabase.instance.ref().child(widget.ref).child(widget.title).once(),
+            builder: (context, asyncSnapshot) {
+              if (asyncSnapshot.hasData) {
+                try {
+                  var info = asyncSnapshot.data?.snapshot.value as Map;
+                  return getWidgetDependingOnRef(widget.ref, info);
+                } on Exception {
+                  return const Text("Error loading data");
                 }
-              },
-            ),
-          ],
+              } else { // Loading data
+                return const Text("loading...");
+              }
+            },
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          var likedList = List.empty(growable: true);
+          await FirebaseDatabase.instance.ref().child("Users").child(FirebaseAuth.instance.currentUser!.uid).once().then((event) {
+            var info = event.snapshot.value as Map;
+            if (info['Liked'] != null) {
+              for (dynamic obj in info['Liked']) {
+                likedList.add(obj);
+              }
+            }
+          });
+          var entry = widget.ref + "/" + widget.title;
+          if (likedList.contains(entry)) {
+            likedList.remove(entry);
+          } else {
+            likedList.add(widget.ref + "/" + widget.title);
+          }
+          await FirebaseDatabase.instance.ref().child("Users").child(FirebaseAuth.instance.currentUser!.uid).update({
+            'Liked': likedList
+          }).then((value) {
+            print("Updated DB");
+          }).catchError((onError) {
+            print("Error adding to liked list");
+          });
+        },
+        child: const Icon(
+          Icons.favorite,
         ),
       ),
     );

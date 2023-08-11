@@ -34,67 +34,60 @@ class _LikedPageState extends State<LikedPage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-        child:Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children:[
-            FutureBuilder(
-              future: FirebaseDatabase.instance.ref().child("Users").child(FirebaseAuth.instance.currentUser!.uid).once(),
-              builder: (context, asyncSnapshot) {
-                if (asyncSnapshot.hasData) {
-                  try {
-                    var info = asyncSnapshot.data?.snapshot.value as Map;
-                    var liked = info["Liked"];
-                    if (liked == null) {
-                      return const Text("You currently haven't liked any flights.");
-                    } else {
-                      return ListView.builder(
-                          padding: const EdgeInsets.all(8),
-                          shrinkWrap: true,
-                          itemCount: liked.length,
-                          itemBuilder: (BuildContext context, int i) {
-                            return GestureDetector(
-                              onTap: () {
-                                String entry = liked[i].toString();
-                                var ref = entry.split("/")[0];
-                                var title = entry.split("/")[1];
+      body: FutureBuilder(
+        future: FirebaseDatabase.instance.ref().child("Users").child(FirebaseAuth.instance.currentUser!.uid).once(),
+        builder: (context, asyncSnapshot) {
+          if (asyncSnapshot.hasData) {
+            try {
+              var info = asyncSnapshot.data?.snapshot.value as Map;
+              var liked = info["Liked"];
+              if (liked == null) {
+                return const Text("You currently haven't liked any flights.");
+              } else {
+                return ListView.builder(
+                    padding: const EdgeInsets.all(8),
+                    shrinkWrap: true,
+                    itemCount: liked.length,
+                    itemBuilder: (BuildContext context, int i) {
+                      return GestureDetector(
+                        onTap: () {
+                          String entry = liked[i].toString();
+                          var ref = entry.split("/")[0];
+                          var title = entry.split("/")[1];
 
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ScreenDetailPage(
-                                          title: title,
-                                          ref: ref
-                                      )
-                                  ),
-                                );
-                              },
-                              child: Card(
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                                child: Center(
-                                    child: Text(
-                                      liked[i],
-                                      style: const TextStyle(
-                                          fontSize: 30,
-                                          fontWeight: FontWeight.w500
-                                      ),
-                                    )
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ScreenDetailPage(
+                                    title: title,
+                                    ref: ref
+                                )
+                            ),
+                          );
+                        },
+                        child: Card(
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                          child: Center(
+                              child: Text(
+                                liked[i],
+                                style: const TextStyle(
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.w500
                                 ),
-                              ),
-                            );
-                          }
+                              )
+                          ),
+                        ),
                       );
                     }
-                  } catch (Exception) {
-                    return const Text("Error loading data");
-                  }
-                } else { // Loading data
-                  return const Text("loading...");
-                }
-              },
-            ),
-          ],
-        ),
+                );
+              }
+            } catch (Exception) {
+              return const Text("Error loading data");
+            }
+          } else { // Loading data
+            return const Text("loading...");
+          }
+        },
       ),
     );
   }
