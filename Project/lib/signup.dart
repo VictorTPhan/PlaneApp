@@ -13,8 +13,10 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-String email = '';
-String password = '';
+  String userName = '';
+  String email = '';
+  String password = '';
+  bool signUpFailed = false;
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +34,18 @@ String password = '';
                 onChanged: (s1) {
                   this.email = s1;
                 },
-                decoration:InputDecoration(
+                decoration:const InputDecoration(
                   border:OutlineInputBorder(),
                   labelText: 'Enter Email',
+                )
+            ),
+            TextField(
+                onChanged: (s1) {
+                  this.userName = s1;
+                },
+                decoration:const InputDecoration(
+                  border:OutlineInputBorder(),
+                  labelText: 'Enter User Name',
                 )
             ),
             TextField(
@@ -42,28 +53,39 @@ String password = '';
                   this.password = s1;
                 },
                 obscureText: true,
-                decoration:InputDecoration(
+                decoration:const InputDecoration(
                   border:OutlineInputBorder(),
                   labelText: 'Enter Password',
                 )
             ),
+            if (signUpFailed)
+              const Text(
+                'Invalid information! Please try again.',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontSize: 20,
+                ),
+              ),
             ElevatedButton(
               onPressed:() async {
                 try{
-                  var credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(email:this.email, password:this.password);
-                  DatabaseReference ref = FirebaseDatabase.instance.ref('Users');
-                  ref.update({
-                    await credential.user!.uid:{
-                      "Currently Viewing":"",
-                      "Liked":[],
-
-                    }
-                    }
-                  );
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => MyHomePage(title:'Home', uid:credential.user?.uid)),
-                  );
+                  var credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(email:this.email, password:this.password).then((value) async {
+                    await FirebaseDatabase.instance.ref().child('Users').child(FirebaseAuth.instance.currentUser!.uid).update(
+                      {
+                        "Currently Viewing":"nothing",
+                        "Liked":[],
+                        "name": this.userName
+                      }
+                    );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => MyHomePage(title:'Home')),
+                    );
+                  }).catchError((onError) {
+                    setState(() {
+                      signUpFailed = true;
+                    });
+                  });
                 }
                 catch(e) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(

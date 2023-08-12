@@ -30,38 +30,71 @@ class _ScreenPageState extends State<ScreenPage> {
                 postList.add(dataSnapshot.key);
               }
 
-              return ListView.builder(
-                shrinkWrap: true,
-                itemCount: postList!.length,
-                itemBuilder: (BuildContext ctx, i)=> Container(
-                  height: 100,
-                  width: 100,
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ScreenDetailPage(
-                                title:postList[i],
-                                ref: widget.title + "s"
-                            )
-                        ),
-                      );
-                    },
-                    child: Card(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                      child: Center(
-                        child: Text(
-                            postList[i],
-                            style: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.w500
+              return Column(
+                children: [
+                  if (widget.title == "Flight")
+                  Container(
+                    color: Colors.orangeAccent,
+                    child: const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.info,
+                            color: Colors.white,
+                            size: 40.0,
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 8.0),
+                              child: Text(
+                                'Flight info is updated automatically once per hour.',
+                                style: TextStyle(
+                                    fontSize: 20,
+                                ),
+                              ),
                             ),
-                        )
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                ),
+                  Expanded(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: postList!.length,
+                      itemBuilder: (BuildContext ctx, i)=> Container(
+                        height: 100,
+                        width: 100,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ScreenDetailPage(
+                                      title:postList[i],
+                                      ref: widget.title + "s"
+                                  )
+                              ),
+                            );
+                          },
+                          child: Card(
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                            child: Center(
+                              child: Text(
+                                  postList[i],
+                                  style: TextStyle(
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.w500
+                                  ),
+                              )
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               );
             } catch (Exception) {
               return const Text("Error loading data");

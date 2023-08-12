@@ -1,8 +1,12 @@
 import 'dart:convert';
 import 'dart:math';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:plane_app/main.dart';
+import 'package:plane_app/settings.dart';
 import 'screen.dart';
 import 'liked.dart';
 import 'screen_details.dart';
@@ -10,10 +14,9 @@ import 'top3.dart';
 import 'trending.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title, required this.uid});
+  const MyHomePage({super.key, required this.title});
 
   final String title;
-  final String? uid;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -192,6 +195,7 @@ class _MyHomePageState extends State<MyHomePage> {
     CheckTime();
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text(widget.title),
       ),
       body: Center(
@@ -202,7 +206,7 @@ class _MyHomePageState extends State<MyHomePage> {
               thickness: 4.0,
             ),
             const Text(
-              'FLIGHT TRACKER',
+              'PLANE TRACKER',
               style: TextStyle(
                 fontSize: 45,
                 fontWeight: FontWeight.bold
@@ -210,6 +214,36 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             const Divider(
               thickness: 4.0,
+            ),
+            FutureBuilder(
+              future: FirebaseDatabase.instance.ref().child("Users").child(FirebaseAuth.instance.currentUser!.uid).once(),
+              builder: (context, asyncSnapshot) {
+                if (asyncSnapshot.hasData) {
+                  try {
+                    var info = asyncSnapshot.data?.snapshot.value as Map;
+                    return Column(
+                      children: [
+                        Text(
+                          "Welcome back, ${info['name']}",
+                          style: TextStyle(
+                              fontSize: 20,
+                          ),
+                        ),
+                        Text(
+                          "You last viewed ${info['Currently Viewing']}",
+                          style: TextStyle(
+                            fontSize: 20,
+                          ),
+                        ),
+                      ],
+                    );
+                  } on Exception {
+                    return const Text("Error loading data");
+                  }
+                } else { // Loading data
+                  return const Text("loading...");
+                }
+              },
             ),
             ElevatedButton(
                 onPressed: () {
@@ -221,7 +255,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   );
                 },
                 child: const Text(
-                  'Top 3 tracked flights', //Top 3 tracked flights
+                  'Top 3 Tracked Flights', //Top 3 tracked flights
                   style: TextStyle(fontSize: 30),
                 ),
             ),
@@ -235,7 +269,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 );
               },
               child: const Text(
-                'Liked', //Top 3 tracked flights
+                'Your Liked Flights', //Top 3 tracked flights
                 style: TextStyle(fontSize: 30),
               ),
             ),
@@ -245,11 +279,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          TrendingPage()),
+                          TrendingPage()
+                  ),
                 );
               },
               child: const Text(
-                'Trending', //Top 3 tracked flights
+                'Trending Pages', //Top 3 tracked flights
                 style: TextStyle(fontSize: 30),
               ),
             ),
@@ -266,6 +301,18 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               child: const Text(
                 'Random Page', //Top 3 tracked flights
+                style: TextStyle(fontSize: 30),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Settings()),
+                );
+              },
+              child: const Text(
+                'Settings',
                 style: TextStyle(fontSize: 30),
               ),
             ),

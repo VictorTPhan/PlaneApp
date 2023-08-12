@@ -28,8 +28,13 @@ class _LikedPageState extends State<LikedPage> {
 
   @override
   Widget build(BuildContext context) {
-    uid = FirebaseAuth.instance.currentUser?.uid as String;
-    print(uid);
+
+    try {
+      print(FirebaseAuth.instance.currentUser!.uid);
+    } catch (error) {
+      print(error);
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
