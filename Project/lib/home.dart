@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:plane_app/login.dart';
 import 'package:plane_app/main.dart';
 import 'package:plane_app/settings.dart';
 import 'screen.dart';
@@ -190,6 +191,96 @@ class _MyHomePageState extends State<MyHomePage> {
     randomPage = titles[Random().nextInt(titles.length)];
   }
 
+  Widget displayUserName() {
+    if (FirebaseAuth.instance.currentUser == null) {
+      return Container();
+    } else {
+      return FutureBuilder(
+        future: FirebaseDatabase.instance.ref().child("Users").child(FirebaseAuth.instance.currentUser!.uid).once(),
+        builder: (context, asyncSnapshot) {
+          if (asyncSnapshot.hasData) {
+            try {
+              var info = asyncSnapshot.data?.snapshot.value as Map;
+              return Column(
+                children: [
+                  Text(
+                    "Welcome back, ${info['name']}",
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
+                  ),
+                  Text(
+                    "You last viewed ${info['Currently Viewing']}",
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
+                  ),
+                ],
+              );
+            } on Exception {
+              return const Text("Error loading data");
+            }
+          } else { // Loading data
+            return const Text("loading...");
+          }
+        },
+      );
+    }
+  }
+
+  Widget showLikedFlightsButton() {
+    if (FirebaseAuth.instance.currentUser == null) {
+      return Container();
+    } else {
+      return ElevatedButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    LikedPage(title: 'Liked')),
+          );
+        },
+        child: const Text(
+          'Your Liked Flights', //Top 3 tracked flights
+          style: TextStyle(fontSize: 30),
+        ),
+      );
+    }
+  }
+
+  Widget showLoginButton() {
+    if (FirebaseAuth.instance.currentUser == null) {
+      return ElevatedButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    LoginPage(title: 'Log In')),
+          );
+        },
+        child: const Text(
+          'Log In',
+          style: TextStyle(fontSize: 30),
+        ),
+      );
+    } else {
+      return ElevatedButton(
+        onPressed: () async {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const Settings()),
+          );
+        },
+        child: const Text(
+          'Settings',
+          style: TextStyle(fontSize: 30),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     CheckTime();
@@ -215,36 +306,7 @@ class _MyHomePageState extends State<MyHomePage> {
             const Divider(
               thickness: 4.0,
             ),
-            FutureBuilder(
-              future: FirebaseDatabase.instance.ref().child("Users").child(FirebaseAuth.instance.currentUser!.uid).once(),
-              builder: (context, asyncSnapshot) {
-                if (asyncSnapshot.hasData) {
-                  try {
-                    var info = asyncSnapshot.data?.snapshot.value as Map;
-                    return Column(
-                      children: [
-                        Text(
-                          "Welcome back, ${info['name']}",
-                          style: TextStyle(
-                              fontSize: 20,
-                          ),
-                        ),
-                        Text(
-                          "You last viewed ${info['Currently Viewing']}",
-                          style: TextStyle(
-                            fontSize: 20,
-                          ),
-                        ),
-                      ],
-                    );
-                  } on Exception {
-                    return const Text("Error loading data");
-                  }
-                } else { // Loading data
-                  return const Text("loading...");
-                }
-              },
-            ),
+            displayUserName(),
             ElevatedButton(
                 onPressed: () {
                   Navigator.push(
@@ -259,20 +321,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   style: TextStyle(fontSize: 30),
                 ),
             ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          LikedPage(title: 'Liked')),
-                );
-              },
-              child: const Text(
-                'Your Liked Flights', //Top 3 tracked flights
-                style: TextStyle(fontSize: 30),
-              ),
-            ),
+            showLikedFlightsButton(),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -304,18 +353,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 style: TextStyle(fontSize: 30),
               ),
             ),
-            ElevatedButton(
-              onPressed: () async {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Settings()),
-                );
-              },
-              child: const Text(
-                'Settings',
-                style: TextStyle(fontSize: 30),
-              ),
-            ),
+            showLoginButton(),
           ],
         ),
       ),

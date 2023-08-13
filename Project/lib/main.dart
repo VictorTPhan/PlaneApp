@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:plane_app/home.dart';
 import 'login.dart';
 
 Future<void> main() async{
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const LoginPage(title: 'Home Screen'),
+      home: const MyHomePage(title: 'Home'),
     );
   }
 }

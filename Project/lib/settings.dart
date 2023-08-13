@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
+import 'home.dart';
 import 'login.dart';
 import 'main.dart';
 
@@ -78,7 +79,7 @@ class _SettingsState extends State<Settings> {
                     FirebaseAuth.instance.currentUser!.delete().then((value) {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const LoginPage(title: "Home")),
+                        MaterialPageRoute(builder: (context) => const MyHomePage(title: "Home")),
                       );
                     }).catchError((onError) {
                       setState(() {
@@ -114,7 +115,7 @@ class _SettingsState extends State<Settings> {
               await FirebaseAuth.instance.signOut().then((value) {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const LoginPage(title: "Home")),
+                  MaterialPageRoute(builder: (context) => const MyHomePage(title: "Home")),
                 );
               });
             },

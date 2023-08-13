@@ -18,11 +18,16 @@ class ScreenDetailPageState extends State<ScreenDetailPage> {
   late List<String?> details;
 
   void SetViewed() async {
-    var uid = FirebaseAuth.instance.currentUser?.uid as String;
-    var ref = FirebaseDatabase.instance.ref("Users/" + uid);
-    await ref.update({
-      "Currently Viewing": widget.ref+"/"+widget.title
-    });
+    if (FirebaseAuth.instance.currentUser != null) {
+      var uid = FirebaseAuth.instance.currentUser?.uid as String;
+      var ref = FirebaseDatabase.instance.ref("Users/" + uid);
+      await ref.update({
+        "Currently Viewing": widget.ref+"/"+widget.title
+      });
+    }
+
+    print(widget.ref + " " + widget.title);
+
     var viewCount = 0;
     await FirebaseDatabase.instance.ref().child(widget.ref).child(widget.title).once().then((value){
       var info = value.snapshot.value as Map;
@@ -34,6 +39,62 @@ class ScreenDetailPageState extends State<ScreenDetailPage> {
     await FirebaseDatabase.instance.ref().child(widget.ref).child(widget.title).update({
       "View Number": viewCount
     });
+  }
+
+  Widget showLikeButton() {
+    if (FirebaseAuth.instance.currentUser == null) {
+      return Container();
+    } else {
+      return FloatingActionButton(
+        onPressed: () async {
+          var likedList = List.empty(growable: true);
+          await FirebaseDatabase.instance.ref().child("Users").child(FirebaseAuth.instance.currentUser!.uid).once().then((event) {
+            var info = event.snapshot.value as Map;
+            if (info['Liked'] != null) {
+              for (dynamic obj in info['Liked']) {
+                likedList.add(obj);
+              }
+            }
+          });
+
+          var likedNumber = 0;
+          await FirebaseDatabase.instance.ref().child(widget.ref).child(widget.title).once().then((event) {
+            var info = event.snapshot.value as Map;
+            if (info['Liked Number'] != null) {
+              likedNumber = info['Liked Number'];
+            }
+          });
+
+          var entry = widget.ref + "/" + widget.title;
+          if (likedList.contains(entry)) {
+            likedList.remove(entry);
+            likedNumber = max(0, likedNumber-1);
+          } else {
+            likedList.add(widget.ref + "/" + widget.title);
+            likedNumber += 1;
+          }
+
+          await FirebaseDatabase.instance.ref().child("Users").child(FirebaseAuth.instance.currentUser!.uid).update({
+            'Liked': likedList
+          }).then((value) {
+            print("Updated DB");
+          }).catchError((onError) {
+            print("Error adding to liked list");
+          });
+
+          await FirebaseDatabase.instance.ref().child(widget.ref).child(widget.title).update({
+            'Liked Number': likedNumber
+          }).then((value) {
+            print("Updated Liked Number");
+          }).catchError((onError) {
+            print("Error adjusting liked number");
+          });
+        },
+        child: const Icon(
+          Icons.favorite,
+        ),
+      );
+    }
   }
 
   Widget getWidgetDependingOnRef(String ref, Map<dynamic, dynamic> info) {
@@ -427,55 +488,7 @@ class ScreenDetailPageState extends State<ScreenDetailPage> {
             ),
           ],
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            var likedList = List.empty(growable: true);
-            await FirebaseDatabase.instance.ref().child("Users").child(FirebaseAuth.instance.currentUser!.uid).once().then((event) {
-              var info = event.snapshot.value as Map;
-              if (info['Liked'] != null) {
-                for (dynamic obj in info['Liked']) {
-                  likedList.add(obj);
-                }
-              }
-            });
-
-            var likedNumber = 0;
-            await FirebaseDatabase.instance.ref().child(widget.ref).child(widget.title).once().then((event) {
-              var info = event.snapshot.value as Map;
-              if (info['Liked Number'] != null) {
-                likedNumber = info['Liked Number'];
-              }
-            });
-
-            var entry = widget.ref + "/" + widget.title;
-            if (likedList.contains(entry)) {
-              likedList.remove(entry);
-              likedNumber = max(0, likedNumber-1);
-            } else {
-              likedList.add(widget.ref + "/" + widget.title);
-              likedNumber += 1;
-            }
-
-            await FirebaseDatabase.instance.ref().child("Users").child(FirebaseAuth.instance.currentUser!.uid).update({
-              'Liked': likedList
-            }).then((value) {
-              print("Updated DB");
-            }).catchError((onError) {
-              print("Error adding to liked list");
-            });
-
-            await FirebaseDatabase.instance.ref().child(widget.ref).child(widget.title).update({
-              'Liked Number': likedNumber
-            }).then((value) {
-              print("Updated Liked Number");
-            }).catchError((onError) {
-              print("Error adjusting liked number");
-            });
-          },
-          child: const Icon(
-            Icons.favorite,
-          ),
-        ),
+        floatingActionButton: showLikeButton()
       ),
     );
   }

@@ -36,6 +36,10 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     FirebaseDatabase db = FirebaseDatabase.instance;
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Login"),
+        automaticallyImplyLeading: true,
+      ),
       body:Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -56,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
             Padding(
               padding: const EdgeInsets.only(bottom: 4.0),
               child: const Text(
-                'Please sign in below',
+                'Sign in to set your favorite airplanes, airports, and flights.',
                 style: TextStyle(
                   fontSize: 20,
                 ),

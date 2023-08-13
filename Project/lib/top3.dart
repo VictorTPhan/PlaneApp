@@ -50,7 +50,7 @@ class _Top3State extends State<Top3> {
                               MaterialPageRoute(
                                   builder: (context) => ScreenDetailPage(
                                       title:postList[i],
-                                      ref: widget.title + "s"
+                                      ref: "Flights"
                                   )
                               ),
                             );
