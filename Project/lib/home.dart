@@ -206,7 +206,7 @@ class _MyHomePageState extends State<MyHomePage> {
               thickness: 4.0,
             ),
             const Text(
-              'PLANE TRACKER',
+              'AEROTRACKER',
               style: TextStyle(
                 fontSize: 45,
                 fontWeight: FontWeight.bold
